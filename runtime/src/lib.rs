@@ -330,6 +330,7 @@ impl pallet_ocw_oracle::Config for Runtime {
     type Call = Call;
     type Event = Event;
     type PricePrecision = PricePrecision;
+    type Time = Timestamp;
 }
 
 impl pallet_liquidate::Config for Runtime {
@@ -397,7 +398,6 @@ where
     type OverarchingCall = Call;
     type Extrinsic = UncheckedExtrinsic;
 }
-
 // Create the runtime by composing the FRAME pallets that were previously configured.
 construct_runtime!(
     pub enum Runtime where
@@ -418,7 +418,7 @@ construct_runtime!(
         Tokens: orml_tokens::{Module, Storage, Event<T>, Config<T>},
         Loans: pallet_loans::{Module, Call, Storage, Event<T>, Config},
         Staking: pallet_staking::{Module, Call, Storage, Event<T>, Config},
-        OcwOracle: pallet_ocw_oracle::{Module, Call, Storage, Event<T>, ValidateUnsigned},
+        OcwOracle: pallet_ocw_oracle::{Module, Call, Storage, Event<T>},
         Liquidate: pallet_liquidate::{Module, Call, Event<T>},
     }
 );

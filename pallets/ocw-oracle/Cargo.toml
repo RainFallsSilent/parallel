@@ -37,4 +37,5 @@ std = [
 	"sp-keystore",
 	"sp-runtime/std",
 	"sp-std/std",
+	"primitives/std",
 ]
