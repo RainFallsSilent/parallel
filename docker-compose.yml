@@ -12,6 +12,7 @@ services:
     networks:
       testing_net:
         ipv4_address: 172.28.1.1
+    restart: always
 
   node_bob:
     depends_on:
@@ -29,6 +30,7 @@ services:
     networks:
       testing_net:
         ipv4_address: 172.28.1.2
+    restart: always
 
   node_collator:
     # Uncomment this to use local image
@@ -46,10 +48,11 @@ services:
       - "polkadot-data-collator:/data"
     links:
       - "node_alice:alice"
-    command: parallel -d /data --collator --alice --port 30345 --rpc-port 9936 --ws-port 9946 --parachain-id 200 -- --chain=/parallel/rococo_local.json --bootnodes '/ip4/172.28.1.1/tcp/30333/p2p/12D3KooWEyoppNCUx8Yx66oV9fJnriXwCcXwDDUA2kj6vnc6iDEp'
+    command: parallel -d /data --collator --alice --port 30345 --rpc-port 9936 --ws-port 9946 --parachain-id 200 --ws-external --rpc-cors all -- --chain=/parallel/rococo_local.json --bootnodes '/ip4/172.28.1.1/tcp/30333/p2p/12D3KooWEyoppNCUx8Yx66oV9fJnriXwCcXwDDUA2kj6vnc6iDEp'
     networks:
       testing_net:
         ipv4_address: 172.28.1.3
+    restart: always
 
 volumes:
   polkadot-data-alice:
