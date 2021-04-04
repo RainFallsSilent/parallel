@@ -35,6 +35,9 @@ services:
   node_collator:
     build:
       context: .
+    depends_on:
+      - node_alice
+      - node_bob
     ports:
       - "30345:30345"
       - "9936:9936"
