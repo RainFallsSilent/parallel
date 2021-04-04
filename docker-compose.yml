@@ -29,8 +29,9 @@ services:
         ipv4_address: 172.28.1.2
 
   node_collator:
-    build:
-      context: .
+    # Uncomment this to use local image
+    # build:
+    #   context: .
     depends_on:
       - node_alice
       - node_bob
