@@ -1,0 +1,12 @@
+#!/usr/bin/env bash
+
+set -e
+
+DIR=$(cd -P -- "$(dirname -- "$0")" && pwd -P)
+
+cd $DIR/..
+
+echo "*** Start parallel node ***"
+
+docker-compose down --remove-orphans
+docker-compose up
