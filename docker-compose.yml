@@ -47,7 +47,7 @@ services:
       - "polkadot-data-collator:/data"
     links:
       - "node_alice:alice"
-    command: parallel --chain=/parallel/rococo_local.json --alice -d /data --collator --port 30345 --rpc-port 9936 --ws-port 9946 --parachain-id 200 --bootnodes '/ip4/172.28.1.1/tcp/30333/p2p/12D3KooWGJN46S9vxi46QAfk211jm3ugzTNUg3Tn7Zy1PieCqpYh'
+    command: parallel -d /data --collator --alice --port 30345 --rpc-port 9936 --ws-port 9946 --parachain-id 200 -- --chain=/parallel/rococo_local.json --bootnodes '/ip4/172.28.1.1/tcp/30333/p2p/12D3KooWGJN46S9vxi46QAfk211jm3ugzTNUg3Tn7Zy1PieCqpYh'
     networks:
       testing_net:
         ipv4_address: 172.28.1.3
