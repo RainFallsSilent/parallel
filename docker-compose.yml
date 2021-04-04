@@ -1,8 +1,6 @@
 version: "3"
 services:
   node_alice:
-    build:
-      context: .
     ports:
       - "30333:30333"
       - "9933:9933"
@@ -16,8 +14,6 @@ services:
         ipv4_address: 172.28.1.1
 
   node_bob:
-    build:
-      context: .
     ports:
       - "30344:30344"
       - "9935:9935"
