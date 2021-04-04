@@ -27,7 +27,7 @@ services:
       - "polkadot-data-bob:/data"
     links:
       - "node_alice:alice"
-    command: polkadot --chain=/polkadot/rococo_local.json --bob -d /data --validator --port 30344 --rpc-port 9935 --ws-port 9945 --bootnodes '/ip4/172.28.1.1/tcp/30333/p2p/12D3KooWGJN46S9vxi46QAfk211jm3ugzTNUg3Tn7Zy1PieCqpYh'
+    command: polkadot --chain=/polkadot/rococo_local.json --bob -d /data --validator --port 30344 --rpc-port 9935 --ws-port 9945 --bootnodes '/ip4/172.28.1.1/tcp/30333/p2p/12D3KooWEyoppNCUx8Yx66oV9fJnriXwCcXwDDUA2kj6vnc6iDEp'
     networks:
       testing_net:
         ipv4_address: 172.28.1.2
@@ -47,7 +47,7 @@ services:
       - "polkadot-data-collator:/data"
     links:
       - "node_alice:alice"
-    command: parallel -d /data --collator --alice --port 30345 --rpc-port 9936 --ws-port 9946 --parachain-id 200 -- --chain=/parallel/rococo_local.json --bootnodes '/ip4/172.28.1.1/tcp/30333/p2p/12D3KooWGJN46S9vxi46QAfk211jm3ugzTNUg3Tn7Zy1PieCqpYh'
+    command: parallel -d /data --collator --alice --port 30345 --rpc-port 9936 --ws-port 9946 --parachain-id 200 -- --chain=/parallel/rococo_local.json --bootnodes '/ip4/172.28.1.1/tcp/30333/p2p/12D3KooWEyoppNCUx8Yx66oV9fJnriXwCcXwDDUA2kj6vnc6iDEp'
     networks:
       testing_net:
         ipv4_address: 172.28.1.3
