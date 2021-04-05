@@ -8,7 +8,7 @@ services:
     image: alexcj96/rococo-v1:f3e2cbf4
     volumes:
       - "polkadot-data-alice:/data"
-    command: polkadot --chain=/polkadot/rococo_local.json --alice -d /data --validator --node-key 0000000000000000000000000000000000000000000000000000000000000001
+    command: polkadot --chain=/polkadot/rococo_local.json --alice -d /data --validator --rpc-cors all --unsafe-ws-external --node-key 0000000000000000000000000000000000000000000000000000000000000001
     networks:
       testing_net:
         ipv4_address: 172.28.1.1
