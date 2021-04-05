@@ -5,7 +5,7 @@ services:
       - "30333:30333"
       - "9933:9933"
       - "9944:9944"
-    image: alexcj96/rococo-v1:f3e2cbf4
+    image: alexcj96/rococo-v1:latest
     volumes:
       - "polkadot-data-alice:/data"
     command: polkadot --chain=/polkadot/rococo_local.json --alice -d /data --validator --rpc-cors all --unsafe-ws-external --node-key 0000000000000000000000000000000000000000000000000000000000000001
@@ -21,7 +21,7 @@ services:
       - "30344:30344"
       - "9935:9935"
       - "9945:9945"
-    image: alexcj96/rococo-v1:f3e2cbf4
+    image: alexcj96/rococo-v1:latest
     volumes:
       - "polkadot-data-bob:/data"
     links:

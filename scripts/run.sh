@@ -9,4 +9,5 @@ cd $DIR/..
 echo "*** Start parallel node ***"
 
 docker-compose down --remove-orphans
-docker-compose up
+docker-compose up -d
+docker-compose logs -f
