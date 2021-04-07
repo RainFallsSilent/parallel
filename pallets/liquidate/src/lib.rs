@@ -9,7 +9,6 @@ use frame_system::{
 };
 pub use module::*;
 use pallet_loans;
-use pallet_ocw_oracle;
 use primitives::*;
 use sp_core::crypto::KeyTypeId;
 use sp_runtime::{
@@ -86,7 +85,6 @@ pub mod module {
         frame_system::Config
         + CreateSignedTransaction<Call<Self>>
         + pallet_loans::Config
-        + pallet_ocw_oracle::Config
     {
         /// The identifier type for an offchain worker.
         type AuthorityId: AppCrypto<Self::Public, Self::Signature>;
@@ -94,6 +92,8 @@ pub mod module {
         type Event: From<Event<Self>> + IsType<<Self as frame_system::Config>::Event>;
         /// The overarching dispatch call type.
         type Call: From<Call<Self>>;
+
+        type PriceFeeder: PriceFeeder;
     }
 
     #[pallet::hooks]
@@ -182,7 +182,7 @@ pub mod module {
                     let mut classify_collaterals: Vec<CollateralsAccountBook> = vec![];
 
                     for currency_id in pallet_loans::Currencies::<T>::get().iter() {
-                        let currency_price = match pallet_ocw_oracle::Prices::<T>::get(currency_id)
+                        let currency_price = match <T as module::Config>::PriceFeeder::get(currency_id)
                             .ok_or(Error::<T>::OracleCurrencyPriceNotReady)
                         {
                             Ok((v, _)) => v,

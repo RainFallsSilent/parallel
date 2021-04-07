@@ -14,7 +14,7 @@ use frame_system::{
 pub use module::*;
 #[allow(unused_imports)]
 use num_traits::float::FloatCore;
-use primitives::{CurrencyId, Price};
+use primitives::{CurrencyId, Price, Timestamp, PriceDetail,PriceFeeder};
 use serde::{Deserialize, Deserializer};
 use sp_core::crypto::KeyTypeId;
 use sp_runtime::{
@@ -37,8 +37,6 @@ pub const FETCH_TIMEOUT_PERIOD: u64 = 3000; // in milli-seconds
 pub const LOCK_TIMEOUT_EXPIRATION: u64 = FETCH_TIMEOUT_PERIOD * 3 + 1000; // in milli-seconds
 pub const LOCK_BLOCK_EXPIRATION: u32 = 5; // in block number
 
-pub type Timestamp = u64;
-pub type PriceDetail = (Price, Timestamp);
 
 #[derive(Encode, Decode, Clone, PartialEq, Eq, RuntimeDebug)]
 pub struct Payload<Public> {
@@ -426,5 +424,11 @@ pub mod module {
         fn current_block_number() -> Self::BlockNumber {
             <frame_system::Module<T>>::block_number()
         }
+    }
+}
+
+impl<T: Config> PriceFeeder for Pallet<T> {
+    fn get(currency_id: &CurrencyId) -> Option<PriceDetail> {
+        Self::get_price(currency_id)
     }
 }

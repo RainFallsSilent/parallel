@@ -6,7 +6,7 @@ use frame_support::pallet_prelude::*;
 use frame_support::transactional;
 use frame_system::pallet_prelude::*;
 use orml_traits::{MultiCurrency, MultiCurrencyExtended};
-use primitives::{Amount, Balance, CurrencyId, RATE_DECIMAL};
+use primitives::{Amount, Balance, CurrencyId, RATE_DECIMAL, PriceFeeder};
 use sp_runtime::{traits::AccountIdConversion, ModuleId, RuntimeDebug};
 use sp_std::vec::Vec;
 
@@ -43,7 +43,7 @@ pub mod module {
     use crate::util::mul_then_div;
 
     #[pallet::config]
-    pub trait Config: frame_system::Config + pallet_ocw_oracle::Config {
+    pub trait Config: frame_system::Config{
         type Event: From<Event<Self>> + IsType<<Self as frame_system::Config>::Event>;
 
         /// Currency type for deposit/withdraw collateral assets to/from loans
@@ -55,6 +55,7 @@ pub mod module {
             Amount = Amount,
         >;
 
+        type PriceFeeder: PriceFeeder;
         /// The loan's module id, keep all collaterals of CDPs.
         #[pallet::constant]
         type ModuleId: Get<ModuleId>;
