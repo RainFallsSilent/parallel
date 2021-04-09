@@ -258,9 +258,6 @@ impl orml_tokens::Config for Runtime {
 
 parameter_types! {
     pub const GetNativeCurrencyId: CurrencyId = CurrencyId::Native;
-
-    pub const LoansModuleId: ModuleId = ModuleId(*b"par/loan");
-    pub const StakingModuleId: ModuleId = ModuleId(*b"par/stak");
 }
 
 impl orml_currencies::Config for Runtime {
@@ -276,10 +273,18 @@ parameter_types! {
     pub StableCurrencyFixedPrice: Price = 1;
 }
 
+parameter_types! {
+    pub const LoansModuleId: ModuleId = ModuleId(*b"par/loan");
+}
+
 impl pallet_loans::Config for Runtime {
     type Event = Event;
     type Currency = Currencies;
     type ModuleId = LoansModuleId;
+}
+
+parameter_types! {
+    pub const StakingModuleId: ModuleId = ModuleId(*b"par/stak");
 }
 
 impl pallet_staking::Config for Runtime {
