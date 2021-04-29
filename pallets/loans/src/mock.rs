@@ -23,7 +23,8 @@ use frame_support::{construct_runtime, parameter_types, PalletId};
 use lazy_static::lazy_static;
 use orml_traits::parameter_type_with_key;
 use primitives::{
-    Amount, Balance, CurrencyId, PriceDetail, PriceFeeder, Rate, Ratio, RATE_DECIMAL, TOKEN_DECIMAL,
+    Amount, Balance, CurrencyId, Price, PriceDetail, PriceFeeder, Rate, Ratio, RATE_DECIMAL,
+    TOKEN_DECIMAL,
 };
 use sp_core::H256;
 use sp_runtime::traits::One;
@@ -140,7 +141,7 @@ lazy_static! {
         Mutex::new(
             vec![DOT, KSM, USDT, XDOT]
                 .iter()
-                .map(|&x| (x, Some((1, 1))))
+                .map(|&x| (x, Some((Price::from_inner(1), 1))))
                 .collect(),
         )
     };
@@ -151,12 +152,12 @@ impl MOCK_PRICE_FEEDER {
         MOCK_PRICE_FEEDER
             .lock()
             .unwrap()
-            .insert(currency_id, Some((price, 1u64)));
+            .insert(currency_id, Some((Price::from_inner(price), 1u64)));
     }
 
     pub fn reset() {
         for (_, val) in MOCK_PRICE_FEEDER.lock().unwrap().iter_mut() {
-            *val = Some((1, 1u64));
+            *val = Some((Price::from_inner(1), 1u64));
         }
     }
 }
