@@ -200,7 +200,7 @@ pub mod module {
                                 Ok((v, _)) => v,
                                 Err(e) => {
                                     log::error!("error msg: {:?}", e);
-                                    Price::MIN
+                                    Price::from_inner(MIN_PRICE)
                                 }
                             };
                         // 2.1.1 insert debt by currency
@@ -216,11 +216,11 @@ pub mod module {
                                 }
                             };
                         if borrow_currency_amount > 0 {
-                            if currency_price == Price::MIN {
+                            if currency_price == Price::from_inner(MIN_PRICE) {
                                 continue 'outer;
                             }
                             let borrow_currency_sum_price = match borrow_currency_amount
-                                .checked_mul(currency_price)
+                                .checked_mul(currency_price.into_inner())
                                 .ok_or(Error::<T>::CaculateError)
                             {
                                 Ok(v) => v,
@@ -234,7 +234,7 @@ pub mod module {
                                 *currency_id,
                                 borrow_currency_amount,
                                 currency_price,
-                                borrow_currency_sum_price,
+								Price::from_inner(borrow_currency_sum_price),
                             ));
                         }
 
@@ -243,7 +243,7 @@ pub mod module {
                             pallet_loans::AccountCollateral::<T>::get(currency_id, &borrower);
                         //the total amount of borrower's collateral token
                         if collateral_ctoken_amount > 0 {
-                            if currency_price == Price::MIN {
+                            if currency_price == Price::from_inner(MIN_PRICE) {
                                 continue 'outer;
                             }
                             let exchange_rate = pallet_loans::ExchangeRate::<T>::get(currency_id);
@@ -260,7 +260,7 @@ pub mod module {
 
                             //the total price of borrower's collateral token
                             let collateral_currency_sum_price = match collateral_currency_amount
-                                .checked_mul(currency_price)
+                                .checked_mul(currency_price.into_inner())
                                 .ok_or(Error::<T>::CaculateError)
                             {
                                 Ok(v) => v,
@@ -275,7 +275,7 @@ pub mod module {
                                 *currency_id,
                                 collateral_currency_amount,
                                 currency_price,
-                                collateral_currency_sum_price,
+                                Price::from_inner(collateral_currency_sum_price),
                                 liquidation_threshold,
                             ));
                         }
@@ -288,10 +288,11 @@ pub mod module {
                     // if (collateral_total_value * liquidation_threshold)/(debt_total_value) < 1 ,execute liquidation
                     let mut processing = true;
                     let collateral_liquidation_threshold_value = classify_collaterals.iter().fold(
-                        Price::MIN,
+                        MIN_PRICE,
                         |acc,&(_,_,_,total_sum_price,liquidation_threshold)|
 							// acc + total_sum_price * liquidation_threshold
 							match total_sum_price
+								.into_inner()
 								.checked_mul(liquidation_threshold)
 								.and_then(|r| r.checked_div(RATE_DECIMAL))
 								.and_then(|r| r.checked_add(acc))
@@ -310,11 +311,11 @@ pub mod module {
                     }
 
                     let debt_total_value = classify_debts.iter().fold(
-                        Price::MIN,
+                        MIN_PRICE,
                         |acc, &(_,_,_,total_sum_price)|
 							// acc + total_sum_price
 							match acc
-								.checked_add(total_sum_price)
+								.checked_add(total_sum_price.into_inner())
 								.ok_or(Error::<T>::CaculateError)
 							{
 								Ok(v) => v,
@@ -345,11 +346,11 @@ pub mod module {
                         vec![];
 
                     let collateral_total_value = classify_collaterals.iter().fold(
-                        Price::MIN,
+                        MIN_PRICE,
                         |acc,&(_,_,_,total_sum_price,_)|
 							// acc + total_sum_price
 							match acc
-								.checked_add(total_sum_price)
+								.checked_add(total_sum_price.into_inner())
 								.ok_or(Error::<T>::CaculateError)
 							{
 								Ok(v) => v,
@@ -372,14 +373,14 @@ pub mod module {
                             classify_collaterals.iter()
                         {
                             // let repay_amount = (single_collateral_total_sum_pirce / collateral_total_value) * (debt_repay_amount * close_factor);
-                            let m: Price = 100;
+                            let m: Price = Price::from_inner(100);
                             let repay_amount = match (close_factor
-                                * single_collateral_total_sum_pirce)
-                                .checked_mul(m)
-                                .and_then(|r| r.checked_div(collateral_total_value))
-                                .and_then(|r| r.checked_mul(debt_repay_amount))
-                                .and_then(|r| r.checked_div(m))
-                                .ok_or(Error::<T>::CaculateError)
+                                * single_collateral_total_sum_pirce.into_inner())
+                            .checked_mul(m.into_inner())
+                            .and_then(|r| r.checked_div(collateral_total_value))
+                            .and_then(|r| r.checked_mul(debt_repay_amount))
+                            .and_then(|r| r.checked_div(m.into_inner()))
+                            .ok_or(Error::<T>::CaculateError)
                             {
                                 Ok(v) => v,
                                 Err(e) => {
@@ -388,7 +389,7 @@ pub mod module {
                                         e
                                     );
                                     processing = false;
-                                    Price::MIN
+                                    MIN_PRICE
                                 }
                             };
                             waiting_for_liquidation_vec.push(WaitingForLiquidation(

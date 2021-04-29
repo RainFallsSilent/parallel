@@ -65,10 +65,10 @@ impl frame_system::Config for Runtime {
 }
 
 pub struct MockDataProvider;
-impl DataProvider<CurrencyId, OraclePrice> for MockDataProvider {
-    fn get(currency_id: &CurrencyId) -> Option<OraclePrice> {
+impl DataProvider<CurrencyId, Price> for MockDataProvider {
+    fn get(currency_id: &CurrencyId) -> Option<Price> {
         match *currency_id {
-            DOT => Some(OraclePrice::saturating_from_integer(100)),
+            DOT => Some(Price::saturating_from_integer(100)),
             _ => None,
         }
     }
@@ -78,7 +78,7 @@ impl DataProviderExtended<CurrencyId, TimeStampedPrice> for MockDataProvider {
     fn get_no_op(currency_id: &CurrencyId) -> Option<TimeStampedPrice> {
         match *currency_id {
             DOT => Some(TimeStampedPrice {
-                value: OraclePrice::saturating_from_integer(100),
+                value: Price::saturating_from_integer(100),
                 timestamp: 0,
             }),
             _ => None,
@@ -90,8 +90,8 @@ impl DataProviderExtended<CurrencyId, TimeStampedPrice> for MockDataProvider {
     }
 }
 
-impl DataFeeder<CurrencyId, OraclePrice, AccountId> for MockDataProvider {
-    fn feed_value(_: AccountId, _: CurrencyId, _: OraclePrice) -> sp_runtime::DispatchResult {
+impl DataFeeder<CurrencyId, Price, AccountId> for MockDataProvider {
+    fn feed_value(_: AccountId, _: CurrencyId, _: Price) -> sp_runtime::DispatchResult {
         Ok(())
     }
 }
@@ -102,7 +102,7 @@ ord_parameter_types! {
 
 parameter_types! {
     pub const GetStableCurrencyId: CurrencyId = CurrencyId::USDT;
-    pub StableCurrencyFixedPrice: Price = 1;
+    pub StableCurrencyFixedPrice: Price = Price::saturating_from_rational(1, 1);
 }
 
 impl Config for Runtime {

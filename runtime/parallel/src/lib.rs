@@ -33,7 +33,7 @@ use sp_runtime::traits::{AccountIdLookup, BlakeTwo256, Block as BlockT};
 use sp_runtime::{
     create_runtime_str, generic, impl_opaque_keys, traits,
     transaction_validity::{TransactionSource, TransactionValidity},
-    ApplyExtrinsicResult, DispatchResult, SaturatedConversion,
+    ApplyExtrinsicResult, DispatchResult, FixedPointNumber, SaturatedConversion,
 };
 use sp_std::prelude::*;
 #[cfg(feature = "std")]
@@ -330,7 +330,7 @@ impl pallet_ocw_oracle::Config for Runtime {
 
 parameter_types! {
     pub const GetStableCurrencyId: CurrencyId = CurrencyId::USDT;
-    pub StableCurrencyFixedPrice: Price = 1;
+    pub StableCurrencyFixedPrice: Price = Price::saturating_from_rational(1, 1);
 }
 
 impl pallet_loans::Config for Runtime {
@@ -552,22 +552,22 @@ impl orml_oracle::Config<ParallelDataProvider> for Runtime {
         orml_oracle::DefaultCombineData<Runtime, MinimumCount, ExpiresIn, ParallelDataProvider>;
     type Time = Timestamp;
     type OracleKey = CurrencyId;
-    type OracleValue = OraclePrice;
+    type OracleValue = Price;
     type RootOperatorAccountId = ZeroAccountId;
     type WeightInfo = ();
 }
 
-pub type TimeStampedPrice = orml_oracle::TimestampedValue<OraclePrice, Moment>;
+pub type TimeStampedPrice = orml_oracle::TimestampedValue<Price, Moment>;
 create_median_value_data_provider!(
     AggregatedDataProvider,
     CurrencyId,
-    OraclePrice,
+    Price,
     TimeStampedPrice,
     [ParallelOracle]
 );
 // Aggregated data provider cannot feed.
-impl DataFeeder<CurrencyId, OraclePrice, AccountId> for AggregatedDataProvider {
-    fn feed_value(_: AccountId, _: CurrencyId, _: OraclePrice) -> DispatchResult {
+impl DataFeeder<CurrencyId, Price, AccountId> for AggregatedDataProvider {
+    fn feed_value(_: AccountId, _: CurrencyId, _: Price) -> DispatchResult {
         Err("Not supported".into())
     }
 }
